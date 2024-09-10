@@ -37,7 +37,6 @@ class Matrix:
         return out
 
     def subtract_matrix(self, other: 'Matrix'):
-        print("subtracting:", type(self.data), type(other))
         data = self.data - other.data
         out = Matrix(data.shape[0], data.shape[1])
         out.data = data

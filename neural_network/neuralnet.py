@@ -1,8 +1,7 @@
 import math
 
 import numpy as np
-
-from matrix import Matrix
+from neural_network.matrix import Matrix
 
 class NeuralNetwork:
     def __init__(self, layers: list[int], learning_rate = 0.01) -> None:
@@ -31,19 +30,19 @@ class NeuralNetwork:
         # create matrix for inputs for easy multiplication
         inputs_matrix = Matrix(len(inputs), 1)
         inputs_matrix.data = np.array(inputs).reshape(-1, 1)
-        print("input shape", inputs_matrix.data, inputs_matrix.data.shape)
+        # print("input shape", inputs_matrix.data, inputs_matrix.data.shape)
 
         layer_outputs = [inputs_matrix]
         for layer, weights in enumerate(self.layer_weights):
-            print("layer", layer)
+            # print("layer", layer)
             # # add bias by adding a row with a 1
             # inputs_matrix.data = np.vstack((inputs_matrix.data, np.ones((inputs_matrix.data.shape[1], 1))))
-            print("weight shape", weights.data.shape)
-            print("input shape", inputs_matrix.data.shape)
+            # print("weight shape", weights.data.shape)
+            # print("input shape", inputs_matrix.data.shape)
             inputs_matrix = weights.multiply_matrix(inputs_matrix)
             # add bias
             inputs_matrix = inputs_matrix.add_matrix(self.layer_bias_weights[layer])
-            print("output shape", inputs_matrix.data.shape)
+            # print("output shape", inputs_matrix.data.shape)
 
             # apply activation function, a sigmoid
             inputs_matrix = inputs_matrix.apply_fn(lambda x: 1 / (1 + pow(math.e, -x)))
@@ -58,23 +57,23 @@ class NeuralNetwork:
         # output_matrix = Matrix(1, len(output))
         # output_matrix.data[0] = output
         output_matrix, layer_outputs = self.__internal_forward(inputs)
-        print("layer outputs", len(layer_outputs))
+        # print("layer outputs", len(layer_outputs))
 
         targets_matrix = Matrix(len(targets), 1)
         targets_matrix.data = np.array(targets).reshape(-1, 1)
 
-        print("backpropagation start")
+        # print("backpropagation start")
         # back-propagation algorithm
         # calculate the error: error = target - output
-        print("output", output_matrix.data, output_matrix.data.shape)
-        print("target", targets_matrix.data, targets_matrix.data.shape)
+        # print("output", output_matrix.data, output_matrix.data.shape)
+        # print("target", targets_matrix.data, targets_matrix.data.shape)
 
         error_matrix = targets_matrix.subtract_matrix(output_matrix)  # output layer error matrix
-        print("error", error_matrix.data)
+        # print("error", error_matrix.data)
 
         for i in range(len(self.layer_weights)-1, -1, -1):
-            print("\n")
-            print("backprop layer", i)
+            # print("\n")
+            # print("backprop layer", i)
             # calculate the gradient: how much the weights should change
             # ΔW = α * ∂E/∂W
             # ΔW = lr * E * (O * (1 - O)) * transpose(I)
@@ -89,21 +88,21 @@ class NeuralNetwork:
 
             # calculate the weight deltas
             transposed_layer = layer_outputs[i].transpose()
-            print("gradient", gradient.data, gradient.data.shape)
-            print("transposed layer", transposed_layer.data, transposed_layer.data.shape)
+            # print("gradient", gradient.data, gradient.data.shape)
+            # print("transposed layer", transposed_layer.data, transposed_layer.data.shape)
             weight_deltas = gradient.multiply_matrix(transposed_layer)
             # weight_deltas.data = np.hstack((weight_deltas.data, gradient.data))  # add the bias which is just the gradient * 1
 
             # update the weights
-            print("weight deltas", weight_deltas.data, weight_deltas.data.shape)
-            print("layer weights", self.layer_weights[i].data, self.layer_weights[i].data.shape)
+            # print("weight deltas", weight_deltas.data, weight_deltas.data.shape)
+            # print("layer weights", self.layer_weights[i].data, self.layer_weights[i].data.shape)
             self.layer_weights[i] = self.layer_weights[i].add_matrix(weight_deltas)
             # update the bias weights
             self.layer_bias_weights[i] = self.layer_bias_weights[i].add_matrix(gradient)
 
             # hidden layer error matrix
-            print("weights shape", self.layer_weights[i].data.shape)
-            print("transposed weights shape", self.layer_weights[i].transpose().data.shape)
-            print("error shape", error_matrix.data.shape)
+            # print("weights shape", self.layer_weights[i].data.shape)
+            # print("transposed weights shape", self.layer_weights[i].transpose().data.shape)
+            # print("error shape", error_matrix.data.shape)
             error_matrix = self.layer_weights[i].transpose().multiply_matrix(error_matrix)
-            print("new error matrix", error_matrix.data, error_matrix.data.shape)
+            # print("new error matrix", error_matrix.data, error_matrix.data.shape)
