@@ -20,6 +20,18 @@ class NeuralNetwork:
     def __str__(self) -> str:
         return "\n".join([str(layer) for layer in self.layer_weights])
 
+    def store_weights(self, path: str) -> None:
+        # store weights as np arrays layer by layer
+        for i in range(len(self.layer_weights)):
+            np.save(path + "_weights" + str(i), self.layer_weights[i].data)
+            np.save(path + "_bias" + str(i), self.layer_bias_weights[i].data)
+
+    def load_weights(self, path: str) -> None:
+        # load weights from np arrays
+        for i in range(len(self.layer_weights)):
+            self.layer_weights[i].data = np.load(path + "_weights" + str(i) + ".npy")
+            self.layer_bias_weights[i].data = np.load(path + "_bias" + str(i) + ".npy")
+
     def forward(self, inputs: list[float]) -> list[float]:
         output_matrix, _ = self.__internal_forward(inputs)
 
