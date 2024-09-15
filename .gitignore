@@ -1,2 +1,8 @@
 # ignore all pycache directories
 **/*.pyc
+**/__pycache__/
+
+digit_recognizer/test_images
+digit_recognizer/training_images
+digit_recognizer/weights
+mnist_dataset
