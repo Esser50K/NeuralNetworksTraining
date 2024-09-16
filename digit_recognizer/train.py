@@ -6,7 +6,7 @@ from neural_network.neuralnet import NeuralNetwork
 def main():
     n_inputs = 28 * 28
     n_outputs = 10
-    nn = NeuralNetwork([n_inputs, 1000, 1000, n_outputs])
+    nn = NeuralNetwork([n_inputs, 1000, 100, 50, n_outputs])
 
     mnist_data = "mnist_dataset"
     training_decoder = MNISTDecoder(

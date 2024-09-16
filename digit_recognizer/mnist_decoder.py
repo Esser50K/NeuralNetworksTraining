@@ -41,6 +41,17 @@ class MNISTDecoder:
         self.current_item += 1
         return image, label
 
+    def get_image_and_label_at(self, idx: int) -> tuple[Optional[np.ndarray], Optional[int]]:
+        self.images_file.seek(image_offset(idx))
+        self.labels_file.seek(label_offset(idx))
+        label = int.from_bytes(self.labels_file.read(1), byteorder='big')
+        image = np.zeros((28, 28))
+        for i in range(28 * 28):
+            image[i // 28][i % 28] = int.from_bytes(self.images_file.read(1), byteorder='big')
+
+        self.current_item += 1
+        return image, label
+
 
 def main():
     mnist_dir_path = "../mnist_dataset"

@@ -1,12 +1,18 @@
+import argparse
 import numpy as np
 
 from mnist_decoder import MNISTDecoder
 from neural_network.neuralnet import NeuralNetwork
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--idx", type=int, default=-1)
+
+    args = parser.parse_args()
+
     n_inputs = 28 * 28
     n_outputs = 10
-    nn = NeuralNetwork([n_inputs, 1000, 1000, n_outputs])
+    nn = NeuralNetwork([n_inputs, 1000, 100, 50, n_outputs])
     nn.load_weights("digit_recognizer/weights/1_epoch")
 
     mnist_data = "mnist_dataset"
@@ -15,6 +21,15 @@ def main():
         f"{mnist_data}/t10k-labels-idx1-ubyte"
     )
     test_decoder.init()
+
+    if args.idx != -1:
+        image, label = test_decoder.get_image_and_label_at(args.idx)
+        normalized_image = image.astype(np.float32) / 255
+        output = nn.forward(list(normalized_image.flat))
+        guess = output.index(max(output))
+        print("guess was:", guess)
+        print("label was:", label)
+        return
 
     correct = 0
     for _ in range(test_decoder.n_items):
