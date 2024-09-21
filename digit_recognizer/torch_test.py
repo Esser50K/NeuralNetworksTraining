@@ -14,7 +14,7 @@ def main():
     args = parser.parse_args()
 
     cnn = CNN()
-    cnn.load_state_dict(torch.load("digit_recognizer/torch_weights/5_epoch", weights_only=True))
+    cnn.load_state_dict(torch.load("digit_recognizer/torch_weights/2_epoch", weights_only=False))
     cnn.eval()
 
     # # load the image from a path and test it

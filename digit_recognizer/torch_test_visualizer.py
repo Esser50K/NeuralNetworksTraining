@@ -6,6 +6,27 @@ from sympy.stats.sampling.sample_numpy import numpy
 from torch_neural_network.cnn import CNN
 from PIL import Image
 
+def gaussian_kernel(size, sigma=1):
+    """Generates a Gaussian kernel."""
+    kernel = np.fromfunction(
+        lambda x, y: (1/ (2 * np.pi * sigma**2)) * np.exp(-((x - (size - 1) / 2) ** 2 + (y - (size - 1) / 2) ** 2) / (2 * sigma ** 2)),
+        (size, size)
+    )
+    return kernel / np.sum(kernel)  # Normalize the kernel
+
+def convolve2d(image, kernel):
+    """Performs 2D convolution."""
+    kernel_size = kernel.shape[0]
+    pad = kernel_size // 2
+    padded_image = np.pad(image, pad, mode='constant')
+    result = np.zeros_like(image, dtype=float)
+
+    for i in range(image.shape[0]):
+        for j in range(image.shape[1]):
+            result[i, j] = np.sum(padded_image[i:i + kernel_size, j:j + kernel_size] * kernel)
+
+    return result
+
 def create_canvas(width) -> (pygame.Surface, tuple, tuple):
     drawing_canvas_dimensions = (width, width)
     neuralnet_output_canvas_dimensions = (width, width / 10)
@@ -25,7 +46,7 @@ def main():
 
     n_outputs = 10
     cnn = CNN()
-    cnn.load_state_dict(torch.load("digit_recognizer/torch_weights/5_epoch", weights_only=False))
+    cnn.load_state_dict(torch.load("digit_recognizer/torch_weights/2_epoch", weights_only=False))
     cnn.eval()
 
     # draw neural network output
@@ -33,6 +54,8 @@ def main():
     cols = 28
     rows = 28
 
+    # gaussian blur kernel to apply to drawn image
+    kernel = gaussian_kernel(size=3, sigma=1)
     running = True
     is_drawing = False
     inputs = []
@@ -66,8 +89,10 @@ def main():
                         input_value = screen.get_at((x, y))[0] / 255
                         inputs.append(input_value)
 
-                img_inputs = numpy.array(inputs).reshape(1, 1, 28, 28)
-                tensor = torch.from_numpy(img_inputs).float()
+                img_inputs = numpy.array(inputs).reshape(28, 28)
+                blurred_image = convolve2d(img_inputs.astype(np.float32), kernel)
+                blurred_image = blurred_image.reshape(1, 1, 28, 28)
+                tensor = torch.from_numpy(blurred_image).float()
                 with torch.no_grad():
                     output = cnn(tensor)
 
@@ -116,9 +141,11 @@ def main():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
                 print("Saving input as image")
                 # make inputs be 255 instead of 1
-                saveable_inputs = np.array(inputs) * 255
+                saveable_inputs = np.array(inputs).reshape(28, 28)
+                blurred_image = convolve2d(saveable_inputs.astype(np.float32), kernel)
+                blurred_image = blurred_image * 255
 
-                image = Image.fromarray(saveable_inputs.reshape(28, 28).astype(np.uint8), mode='L')
+                image = Image.fromarray(blurred_image.astype(np.uint8), mode='L')
                 image.save("input.png")
 
 

@@ -16,8 +16,9 @@ class MNISTDataset(Dataset):
 
     def __getitem__(self, idx):
         image, label = self.decoder.get_image_and_label_at(idx)
+        image = image / 255
         image_tensor = torch.tensor(image, dtype=torch.float32).unsqueeze(0)  # Shape: (1, 28, 28)
-        image_tensor /= 255.0  # Normalize to [0, 1]
+        # image_tensor /= 255.0  # Normalize to [0, 1]
         return image_tensor, label
 
 def train(model, device, train_loader, optimizer, criterion, epoch):
