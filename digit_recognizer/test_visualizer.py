@@ -22,8 +22,8 @@ def main():
 
     n_inputs = 28 * 28
     n_outputs = 10
-    nn = NeuralNetwork([n_inputs, 1000, 100, 50, n_outputs])
-    nn.load_weights("digit_recognizer/weights/1_epoch")
+    nn = NeuralNetwork([n_inputs, 16, 16, n_outputs])
+    nn.load_weights("digit_recognizer/weights/100_epoch")
 
     # draw neural network output
     screen, drawing_canvas_dimensions, neuralnet_output_canvas_dimensions = create_canvas(500)
@@ -50,17 +50,17 @@ def main():
                 mouse_y = mouse_pos[1]
                 if mouse_x < drawing_canvas_dimensions[0] and mouse_y < drawing_canvas_dimensions[1]:
                     # draw on canvas
-                    pygame.draw.circle(screen, (255, 255, 255), (mouse_x, mouse_y), 20)
+                    pygame.draw.circle(screen, (255, 255, 255, 0.2), (mouse_x, mouse_y), 15)
                     pygame.display.update()
 
                 # reduce drawing canvas to neural network input size
                 inputs = []
-                for i in range(cols):
-                    for j in range(rows):
-                        x = int(i * (drawing_canvas_dimensions[0] / rows))
-                        y = int(j * (drawing_canvas_dimensions[1] / cols))
+                for i in range(rows):
+                    for j in range(cols):
+                        x = int(j * (drawing_canvas_dimensions[0] / cols))
+                        y = int(i * (drawing_canvas_dimensions[1] / rows))
 
-                        input_value = screen.get_at((y, x))[0] / 255
+                        input_value = screen.get_at((x, y))[0] / 255
                         inputs.append(input_value)
 
                 # print inputs grid as ascii art
@@ -75,6 +75,7 @@ def main():
                     ascii_input += "\n"
                 print(ascii_input)
 
+                print("inputs:", max(inputs), min(inputs))
                 output = nn.forward(inputs)
                 guessed_digit = output.index(max(output))
                 print(f"guessed digit: {guessed_digit}")
