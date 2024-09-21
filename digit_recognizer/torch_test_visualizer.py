@@ -46,7 +46,7 @@ def main():
 
     n_outputs = 10
     cnn = CNN()
-    cnn.load_state_dict(torch.load("digit_recognizer/torch_weights/2_epoch", weights_only=False))
+    cnn.load_state_dict(torch.load("digit_recognizer/torch_weights/1_epoch", weights_only=False))
     cnn.eval()
 
     # draw neural network output

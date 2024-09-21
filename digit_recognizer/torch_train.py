@@ -4,6 +4,7 @@ import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 from torch_neural_network.cnn import CNN
 from mnist_decoder import MNISTDecoder
+import matplotlib.pyplot as plt
 
 class MNISTDataset(Dataset):
     def __init__(self, images_path: str, labels_path: str):
@@ -18,6 +19,10 @@ class MNISTDataset(Dataset):
         image, label = self.decoder.get_image_and_label_at(idx)
         image = image / 255
         image_tensor = torch.tensor(image, dtype=torch.float32).unsqueeze(0)  # Shape: (1, 28, 28)
+
+        # plt.imshow(image, cmap='gray', interpolation='none')
+        # plt.plot()
+        # plt.show()
         # image_tensor /= 255.0  # Normalize to [0, 1]
         return image_tensor, label
 
@@ -45,7 +50,7 @@ def main():
     train_loader = DataLoader(mnist_dataset, batch_size=64, shuffle=True)
 
     # Device configuration
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = torch.device('mps')
 
     # Instantiate the model, define the loss function and optimizer
     cnn = CNN().to(device)
@@ -53,7 +58,7 @@ def main():
     optimizer = optim.Adam(cnn.parameters(), lr=0.001)
 
     # Training loop
-    num_epochs = 5
+    num_epochs = 1
     for epoch in range(num_epochs):
         train(cnn, device, train_loader, optimizer, criterion, epoch)
 

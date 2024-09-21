@@ -5,6 +5,7 @@ import torch
 from mnist_decoder import MNISTDecoder
 from torch_neural_network.cnn import CNN
 from PIL import Image
+import matplotlib.pyplot as plt
 
 def main():
     parser = argparse.ArgumentParser()
@@ -14,7 +15,7 @@ def main():
     args = parser.parse_args()
 
     cnn = CNN()
-    cnn.load_state_dict(torch.load("digit_recognizer/torch_weights/2_epoch", weights_only=False))
+    cnn.load_state_dict(torch.load("digit_recognizer/torch_weights/1_epoch", weights_only=False))
     cnn.eval()
 
     # # load the image from a path and test it
@@ -70,6 +71,12 @@ def main():
         total_avg_confidence += probabilities[0][label].item()
         avg_confidence_per_output[label] += probabilities[0][label].item()
         test_input_count[label] += 1
+        print("Label: ", str(guess))
+        plt.imshow(image, cmap='gray', interpolation='none')
+        plt.plot()
+        plt.show()
+        
+
 
     total_avg_confidence /= test_decoder.n_items
     for i in range(10):
