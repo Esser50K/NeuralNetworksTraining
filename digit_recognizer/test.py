@@ -3,17 +3,30 @@ import numpy as np
 
 from mnist_decoder import MNISTDecoder
 from neural_network.neuralnet import NeuralNetwork
+from PIL import Image
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--idx", type=int, default=-1)
+    parser.add_argument("--path", type=str, default="")
 
     args = parser.parse_args()
 
     n_inputs = 28 * 28
     n_outputs = 10
-    nn = NeuralNetwork([n_inputs, 1000, 100, 50, n_outputs])
-    nn.load_weights("digit_recognizer/weights/1_epoch")
+    nn = NeuralNetwork([n_inputs, 16, 16, n_outputs], learning_rate=0.01)
+    nn.load_weights("digit_recognizer/weights/100_epoch")
+
+    # load the image from a path and test it
+    if args.path != "":
+        image = Image.open(args.path)
+        image = image.convert("L")
+        image = np.array(image)
+        normalized_image = image.astype(np.float32) / 255
+        output = nn.forward(list(normalized_image.flat))
+        guess = output.index(max(output))
+        print("guess was:", guess)
+        return
 
     mnist_data = "mnist_dataset"
     test_decoder = MNISTDecoder(
@@ -31,6 +44,10 @@ def main():
         print("label was:", label)
         return
 
+    total_avg_confidence = 0
+    avg_confidence_per_ouput = [0] * 10
+    test_input_count = [0] * 10
+    correct_outputs_by_label = [0] * 10
     correct = 0
     for _ in range(test_decoder.n_items):
         image, label = test_decoder.get_next_image_and_label()
@@ -39,7 +56,22 @@ def main():
         guess = output.index(max(output))
         if guess == label:
             correct += 1
+            correct_outputs_by_label[label] += 1
+
+        total_avg_confidence += output[label]
+        avg_confidence_per_ouput[label] += output[label]
+
+        test_input_count[label] += 1
+
+    total_avg_confidence /= test_decoder.n_items
+    for i in range(10):
+        avg_confidence_per_ouput[i] /= test_input_count[i]
+
     print(f"Accuracy: {correct/test_decoder.n_items}")
+    print("Test Distribution:", test_input_count)
+    print("Avg Confidence:", total_avg_confidence)
+    print("Avg Confidence Per Output:", avg_confidence_per_ouput)
+    print("Correct Outputs By Label:", correct_outputs_by_label)
 
 if __name__ == '__main__':
     main()

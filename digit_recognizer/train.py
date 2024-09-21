@@ -6,7 +6,8 @@ from neural_network.neuralnet import NeuralNetwork
 def main():
     n_inputs = 28 * 28
     n_outputs = 10
-    nn = NeuralNetwork([n_inputs, 1000, 100, 50, n_outputs])
+    nn = NeuralNetwork([n_inputs, 16, 16, n_outputs])
+    # nn.load_weights("digit_recognizer/weights/1_epoch")
 
     mnist_data = "mnist_dataset"
     training_decoder = MNISTDecoder(
@@ -17,7 +18,7 @@ def main():
 
     print(f"Training on {training_decoder.n_items} images")
     for i in range(training_decoder.n_items):
-        image, label = training_decoder.get_next_image_and_label()
+        image, label = training_decoder.get_image_and_label_at(i)
         output = [0] * 10
         output[label] = 1
 
@@ -28,8 +29,8 @@ def main():
             print(f"Error on image {i} with label {label}:", e)
         if i % 1000 == 0:
             print(f"Trained {i} images")
+    # nn.store_weights(f"digit_recognizer/weights/{j+1}_epoch")
 
-    nn.store_weights("digit_recognizer/weights/1_epoch")
 
 if __name__ == '__main__':
     main()
