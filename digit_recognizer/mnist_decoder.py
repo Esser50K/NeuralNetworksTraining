@@ -8,7 +8,7 @@ def label_offset(idx: int) -> int:
     return 8 + idx
 
 def image_offset(idx: int) -> int:
-    return 8 + (idx * 28 * 28)
+    return 16 + (idx * 28 * 28)
 
 class MNISTDecoder:
     def __init__(self, images_path: str, labels_path: str):
