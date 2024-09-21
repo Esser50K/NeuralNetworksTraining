@@ -45,7 +45,7 @@ def main():
         return
 
     total_avg_confidence = 0
-    avg_confidence_per_ouput = [0] * 10
+    avg_confidence_per_output = [0] * 10
     test_input_count = [0] * 10
     correct_outputs_by_label = [0] * 10
     correct = 0
@@ -59,18 +59,18 @@ def main():
             correct_outputs_by_label[label] += 1
 
         total_avg_confidence += output[label]
-        avg_confidence_per_ouput[label] += output[label]
+        avg_confidence_per_output[label] += output[label]
 
         test_input_count[label] += 1
 
     total_avg_confidence /= test_decoder.n_items
     for i in range(10):
-        avg_confidence_per_ouput[i] /= test_input_count[i]
+        avg_confidence_per_output[i] /= test_input_count[i]
 
     print(f"Accuracy: {correct/test_decoder.n_items}")
     print("Test Distribution:", test_input_count)
     print("Avg Confidence:", total_avg_confidence)
-    print("Avg Confidence Per Output:", avg_confidence_per_ouput)
+    print("Avg Confidence Per Output:", avg_confidence_per_output)
     print("Correct Outputs By Label:", correct_outputs_by_label)
 
 if __name__ == '__main__':

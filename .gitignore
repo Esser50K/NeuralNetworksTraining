@@ -5,4 +5,5 @@
 digit_recognizer/test_images
 digit_recognizer/training_images
 digit_recognizer/weights
+digit_recognizer/torch_weights
 mnist_dataset
