@@ -22,8 +22,8 @@ def main():
 
     n_inputs = 28 * 28
     n_outputs = 10
-    nn = NeuralNetwork([n_inputs, 16, 16, n_outputs])
-    nn.load_weights("digit_recognizer/weights/100_epoch")
+    nn = NeuralNetwork([n_inputs, 100, 100, n_outputs])
+    nn.load_weights("digit_recognizer/weights/2_epoch")
 
     # draw neural network output
     screen, drawing_canvas_dimensions, neuralnet_output_canvas_dimensions = create_canvas(500)

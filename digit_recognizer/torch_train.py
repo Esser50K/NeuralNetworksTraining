@@ -45,12 +45,13 @@ def main():
     train_loader = DataLoader(mnist_dataset, batch_size=64, shuffle=True)
 
     # Device configuration
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = torch.device('mps')
 
     # Instantiate the model, define the loss function and optimizer
     cnn = CNN().to(device)
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(cnn.parameters(), lr=0.001)
+    optimizer = optim.Adam(cnn.parameters(), lr=0.0001)
 
     # Training loop
     num_epochs = 5

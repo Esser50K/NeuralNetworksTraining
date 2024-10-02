@@ -14,8 +14,8 @@ def main():
 
     n_inputs = 28 * 28
     n_outputs = 10
-    nn = NeuralNetwork([n_inputs, 16, 16, n_outputs], learning_rate=0.01)
-    nn.load_weights("digit_recognizer/weights/100_epoch")
+    nn = NeuralNetwork([n_inputs, 100, 100, n_outputs], learning_rate=0.01)
+    nn.load_weights("digit_recognizer/weights/2_epoch")
 
     # load the image from a path and test it
     if args.path != "":
@@ -68,10 +68,10 @@ def main():
         avg_confidence_per_output[i] /= test_input_count[i]
 
     print(f"Accuracy: {correct/test_decoder.n_items}")
-    print("Test Distribution:", test_input_count)
     print("Avg Confidence:", total_avg_confidence)
-    print("Avg Confidence Per Output:", avg_confidence_per_output)
+    print("Test Distribution:", test_input_count)
     print("Correct Outputs By Label:", correct_outputs_by_label)
+    print("Avg Confidence Per Output:", avg_confidence_per_output)
 
 if __name__ == '__main__':
     main()

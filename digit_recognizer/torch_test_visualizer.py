@@ -1,7 +1,6 @@
 import pygame
 import torch
 import numpy as np
-from sympy.stats.sampling.sample_numpy import numpy
 
 from torch_neural_network.cnn import CNN
 from PIL import Image
@@ -46,7 +45,7 @@ def main():
 
     n_outputs = 10
     cnn = CNN()
-    cnn.load_state_dict(torch.load("digit_recognizer/torch_weights/2_epoch", weights_only=False))
+    cnn.load_state_dict(torch.load("digit_recognizer/torch_weights/5_epoch", weights_only=False))
     cnn.eval()
 
     # draw neural network output
@@ -89,7 +88,7 @@ def main():
                         input_value = screen.get_at((x, y))[0] / 255
                         inputs.append(input_value)
 
-                img_inputs = numpy.array(inputs).reshape(28, 28)
+                img_inputs = np.array(inputs).reshape(28, 28)
                 blurred_image = convolve2d(img_inputs.astype(np.float32), kernel)
                 blurred_image = blurred_image.reshape(1, 1, 28, 28)
                 tensor = torch.from_numpy(blurred_image).float()
