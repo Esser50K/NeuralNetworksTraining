@@ -35,6 +35,11 @@ class Perceptron:
         self.bias += error * self.learning_rate
 
 def randomly_weighted_perceptron(num_inputs: int, learning_rate: float) -> Perceptron:
-    weights = [round(random.randrange(-10, 10) / 10, 2) for _ in range(num_inputs)]
-    bias = round(random.randrange(-10, 10) / 10, 2)
+    weights = [round(random.uniform(-10, 10), 2) for _ in range(num_inputs)]
+    bias = round(random.uniform(-10, 10), 2)
+    return Perceptron(weights, bias, learning_rate)
+
+def statically_weighted_perceptron(learning_rate: float) -> Perceptron:
+    weights = [-1, 3]
+    bias = 2
     return Perceptron(weights, bias, learning_rate)
